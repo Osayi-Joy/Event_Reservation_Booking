@@ -92,10 +92,6 @@ public class ReservationServiceImpl implements ReservationService {
         BeanUtilWrapper.copyNonNullProperties(reservation, reservationDto);
         return reservationDto;
     }
-    private Reservation mapToEntity(EventRequestDTO eventRequestDTO) {
-        Reservation reservation = new Reservation();
-        BeanUtilWrapper.copyNonNullProperties(eventRequestDTO, reservation);
-        return reservation;
-    }
+
 }
 

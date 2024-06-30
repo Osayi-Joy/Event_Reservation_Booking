@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
@@ -21,19 +22,17 @@ import java.util.Map;
  * @createdOn Jun-26(Wed)-2024
  */
 
-
 @Slf4j
 @Component
 public class JwtHelper {
 
   private final RSAPrivateKey privateKey;
   private final RSAPublicKey publicKey;
-
   private final JWT jwtDecoder;
 
-  public JwtHelper(RSAPrivateKey privateKey, RSAPublicKey publicKey, JWT jwtDecoder) {
-    this.privateKey = privateKey;
-    this.publicKey = publicKey;
+  public JwtHelper(KeyPair keyPair, JWT jwtDecoder) {
+    this.privateKey = (RSAPrivateKey) keyPair.getPrivate();
+    this.publicKey = (RSAPublicKey) keyPair.getPublic();
     this.jwtDecoder = jwtDecoder;
   }
 
@@ -44,14 +43,13 @@ public class JwtHelper {
 
     JWTCreator.Builder jwtBuilder = JWT.create().withSubject(subject);
 
-    // Add claims
     claims.forEach(jwtBuilder::withClaim);
 
-    // Add expiredAt and etc
+
     return jwtBuilder
-        .withNotBefore(new Date())
-        .withExpiresAt(calendar.getTime())
-        .sign(Algorithm.RSA256(publicKey, privateKey));
+            .withNotBefore(new Date())
+            .withExpiresAt(calendar.getTime())
+            .sign(Algorithm.RSA256(publicKey, privateKey));
   }
 
   public boolean isTokenExpired(String token) {
@@ -62,7 +60,7 @@ public class JwtHelper {
 
   private LocalDateTime convertToLocalDateTimeViaMiliSecond(Date dateToConvert) {
     return Instant.ofEpochMilli(dateToConvert.getTime())
-        .atZone(ZoneId.systemDefault())
-        .toLocalDateTime();
+            .atZone(ZoneId.systemDefault())
+            .toLocalDateTime();
   }
 }

@@ -13,7 +13,7 @@ public class Constants {
     public static final String PAGE_SIZE = "pageSize";
     public static final String PAGE_NUMBER = "pageNumber";
 
-    public static final String API_V1 = "/api/v1/account-service/";
+    public static final String API_V1 = "/api/v1/event-booking/";
     public static final String AUTHENTICATION_API_VI = API_V1 + "authentication/process/";
     public static final String USER_API_VI = API_V1 + "user/process/";
     public static final String EVENT_API_VI = API_V1 + "event/process/";

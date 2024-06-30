@@ -11,7 +11,6 @@ public class SwaggerDocUtil {
     public static final String AUTHENTICATION_CONTROLLER_LOGIN_SUMMARY = "User Login";
     public static final String AUTHENTICATION_CONTROLLER_LOGIN_DESCRIPTION = "Endpoint for user login authentication";
 
-    // Administrator Controller
     public static final String USER_CONTROLLER_SUMMARY = "User Controller";
     public static final String USER_CONTROLLER_DESCRIPTION = "APIs for user operations";
 

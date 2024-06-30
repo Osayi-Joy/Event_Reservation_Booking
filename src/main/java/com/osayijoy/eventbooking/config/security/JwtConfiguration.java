@@ -27,96 +27,26 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @Configuration
 @RequiredArgsConstructor
 public class JwtConfiguration {
-  @Value("${event.booking.securityJWTKeyStorePath}")
-  private String keyStorePath;
-
-  @Value("${event.booking.securityJWTKeyStorePassword}")
-  private String keyStorePassword;
-
-  @Value("${event.booking.securityJWTKeyAlias}")
-  private String keyAlias;
-
-  @Value("${event.booking.securityJWTPrivateKeyPassphrase}")
-  private String privateKeyPassphrase;
 
   @Bean
-  public KeyStore keyStore() {
-    try {
-      KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-      Path path = Paths.get(keyStorePath);
-      InputStream resourceAsStream = new FileInputStream(path.toFile());
-      keyStore.load(
-              resourceAsStream, keyStorePassword.toCharArray());
-      return keyStore;
-    } catch (IOException | CertificateException | NoSuchAlgorithmException | KeyStoreException e) {
-      log.error("Unable to load keystore: {}", keyStorePath, e);
-    }
-
-    throw new IllegalArgumentException("Unable to load keystore");
+  public KeyPair keyPair() {
+    return KeyPairGeneratorUtility.generateKeyPair();
   }
 
   @Bean
-  public RSAPrivateKey jwtSigningKey(KeyStore keyStore) {
-    try {
-      Key key =
-              keyStore.getKey(
-                      keyAlias,
-                      privateKeyPassphrase.toCharArray());
-      if (key instanceof RSAPrivateKey rsaPrivateKey) {
-        return rsaPrivateKey;
-      }
-    } catch (UnrecoverableKeyException | NoSuchAlgorithmException | KeyStoreException e) {
-      log.error(
-              "Unable to load private key from keystore: {}",
-              keyStorePath,
-              e);
-    }
-
-    throw new IllegalArgumentException("Unable to load private key");
+  public RSAPrivateKey jwtSigningKey(KeyPair keyPair) {
+    return (RSAPrivateKey) keyPair.getPrivate();
   }
 
   @Bean
-  public RSAPublicKey jwtValidationKey(KeyStore keyStore) {
-    try {
-      Certificate certificate = keyStore.getCertificate(keyAlias);
-      PublicKey publicKey = certificate.getPublicKey();
-
-      if (publicKey instanceof RSAPublicKey rsaPublicKey) {
-        return rsaPublicKey;
-      }
-    } catch (KeyStoreException e) {
-      log.error(
-              "Unable to load private key from keystore: {}",
-             keyStorePath,
-              e);
-    }
-
-    throw new IllegalArgumentException("Unable to load RSA public key");
+  public RSAPublicKey jwtValidationKey(KeyPair keyPair) {
+    return (RSAPublicKey) keyPair.getPublic();
   }
 
   @Bean
   public JwtDecoder jwtDecoder(RSAPublicKey rsaPublicKey) {
     return NimbusJwtDecoder.withPublicKey(rsaPublicKey).build();
   }
-
-
-
-
-
-//  private final KeyPair keyPair;
-//
-//  @Bean
-//  public RSAPrivateKey jwtSigningKey() {
-//    return (RSAPrivateKey) keyPair.getPrivate();
-//  }
-//
-//  @Bean
-//  public RSAPublicKey jwtValidationKey() {
-//    return (RSAPublicKey) keyPair.getPublic();
-//  }
-//
-//  @Bean
-//  public JwtDecoder jwtDecoder() {
-//    return NimbusJwtDecoder.withPublicKey(jwtValidationKey()).build();
-//  }
 }
+
+

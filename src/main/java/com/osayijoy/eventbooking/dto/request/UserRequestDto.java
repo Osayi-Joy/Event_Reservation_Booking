@@ -1,4 +1,4 @@
-package com.osayijoy.eventbooking.dto;
+package com.osayijoy.eventbooking.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserRequestDto {
 
     @NotBlank(message = "Name is mandatory")
     @Size(max = 100, message = "Name cannot be longer than 100 characters")

@@ -17,6 +17,7 @@ import com.osayijoy.eventbooking.exception.ErrorConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
  * @author Joy Osayi
  * @createdOn Jun-26(Wed)-2024
  */
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,13 +40,14 @@ public class AuthenticationServiceImpl implements UserDetailsService, Authentica
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("Load user by username {}", username);
         User userFoundInDB =
                 userRepository
                         .findFirstByEmailOrderByCreatedDate(username)
                         .orElseThrow(
                                 () -> new ResourceNotFoundException(ErrorConstants.LOGIN_FAILED));
 
-        return getUserProfileDTO(username, userFoundInDB);
+        return getUserProfileDTO(userFoundInDB);
     }
 
     @Override
@@ -54,8 +57,7 @@ public class AuthenticationServiceImpl implements UserDetailsService, Authentica
         if (passwordEncoder.matches(loginRequestDTO.getPassword(), userDetails.getPassword())) {
             return getLoginResponse(loginRequestDTO, userDetails);
         }
-
-    throw new BadRequestException(ErrorConstants.LOGIN_FAILED);
+        throw new BadRequestException(ErrorConstants.LOGIN_FAILED);
     }
 
 
@@ -67,7 +69,7 @@ public class AuthenticationServiceImpl implements UserDetailsService, Authentica
         Map<String, Object> additionalInformation = new HashMap<>();
         additionalInformation.put("Name", userDetails.getName());
         additionalInformation.put("email", userDetails.getEmail());
-        additionalInformation.put("permissions", userDetails.getAuthorities());
+        additionalInformation.put("Role", userDetails.getRole().getAuthority());
        return LoginResponse.builder()
                 .accessToken(jwtHelper.createJwtForClaims(loginRequestDTO.getEmail(), claims))
                 .additionalInformation(additionalInformation)
@@ -77,24 +79,24 @@ public class AuthenticationServiceImpl implements UserDetailsService, Authentica
 
 
     private UserAuthDetials getUserProfileDTO(
-            String username, User userFoundInDB) {
+           User userFoundInDB) {
         UserAuthDetials userProfileDTO = new UserAuthDetials();
         userProfileDTO.setName(userFoundInDB.getName());
         userProfileDTO.setEmail(userFoundInDB.getEmail());
         userProfileDTO.setPassword(userFoundInDB.getPassword());
-//        userProfileDTO.setPermissions(getGrantedAuthorities(userFoundInDB.getAssignedRole()));
+        userProfileDTO.setRole(new SimpleGrantedAuthority(userFoundInDB.getRole().name()));
 
         return userProfileDTO;
     }
 
     public static Map<String, String> getClaims(String username, UserAuthDetials userDetails) {
-        return buildClaims(username, userDetails, null);
+        return buildClaims(username, userDetails);
     }
 
 
 
     private static Map<String, String> buildClaims(
-            String username, UserAuthDetials userDetails, String resetKey) {
+            String username, UserAuthDetials userDetails) {
         Map<String, String> claims = new HashMap<>();
         claims.put("username", username);
 
@@ -102,7 +104,7 @@ public class AuthenticationServiceImpl implements UserDetailsService, Authentica
                 userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(" "));
-        claims.put("permissions", authorities);
+        claims.put("roles", authorities);
         claims.put("email", userDetails.getEmail());
         claims.put("name", userDetails.getName());
         return claims;

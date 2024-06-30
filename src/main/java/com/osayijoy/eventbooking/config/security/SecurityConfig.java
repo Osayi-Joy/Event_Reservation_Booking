@@ -22,11 +22,13 @@ import org.springframework.web.client.RestTemplate;
 import java.security.KeyPair;
 
 import static com.osayijoy.eventbooking.utils.constants.Constants.AUTHENTICATION_API_VI;
+import static com.osayijoy.eventbooking.utils.constants.Constants.USER_API_VI;
 
 /**
  * @author Joy Osayi
  * @createdOn Jun-26(Wed)-2024
  */
+
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -50,6 +52,7 @@ public class SecurityConfig {
             auth ->
                 auth.requestMatchers(
                                 AUTHENTICATION_API_VI.concat("**"),
+                         USER_API_VI,
                         "/swagger-ui.html",
                         "/documentation/**",
                         "/documentation/v3/api-docs/swagger-config",
@@ -98,8 +101,4 @@ public class SecurityConfig {
     return new JWT();
   }
 
-//  @Bean
-//  public KeyPair keyPair() {
-//    return KeyPairGeneratorUtility.generateKeyPair();
-//  }
 }

@@ -7,11 +7,18 @@ import com.osayijoy.eventbooking.model.Event;
 import com.osayijoy.eventbooking.repository.EventRepository;
 import com.osayijoy.eventbooking.service.EventService;
 import com.osayijoy.eventbooking.utils.BeanUtilWrapper;
+import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 /**
@@ -58,19 +65,24 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventResponseDto> getAllEvents() {
-        List<Event> events = eventRepository.findAll();
-        return events.stream()
-                .map(this::mapToDto)
-                .collect(Collectors.toList());
-    }
+    public PaginatedResponseDTO<EventResponseDto> searchEvents(String name, String startDate, String endDate, String category,
+                                                               int page, int size) {
+        Specification<Event> spec = buildSpecification(name, startDate, endDate, category);
+        Pageable pageable = PageRequest.of(page, size);
 
-    @Override
-    public List<EventResponseDto> searchEvents(String name, String category) {
-        List<Event> events = eventRepository.findByNameContainingAndCategory(name, category);
-        return events.stream()
+        Page<Event> eventPage = eventRepository.findAll(spec, pageable);
+        List<EventResponseDto> events = eventPage.getContent().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+
+        return PaginatedResponseDTO.<EventResponseDto>builder()
+                .content(events)
+                .currentPage(eventPage.getNumber())
+                .totalPages(eventPage.getTotalPages())
+                .totalItems(eventPage.getTotalElements())
+                .isFirstPage(eventPage.isFirst())
+                .isLastPage(eventPage.isLast())
+                .build();
     }
 
     @Override
@@ -80,6 +92,36 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with id " + id));
         eventRepository.delete(event);
     }
+
+
+    private Specification<Event> buildSpecification(String name, String startDate, String endDate, String category) {
+        return (root, query, criteriaBuilder) -> {
+            Predicate predicate = criteriaBuilder.conjunction();
+
+            if (name != null && !name.isEmpty()) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("name"), "%" + name + "%"));
+            }
+
+            if (category != null && !category.isEmpty()) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("category"), category));
+            }
+
+            if (startDate != null && !startDate.isEmpty() && endDate != null && !endDate.isEmpty()) {
+                LocalDate start = LocalDate.parse(startDate);
+                LocalDate end = LocalDate.parse(endDate);
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.between(root.get("date"), start, end));
+            } else if (startDate != null && !startDate.isEmpty()) {
+                LocalDate start = LocalDate.parse(startDate);
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.greaterThanOrEqualTo(root.get("date"), start));
+            } else if (endDate != null && !endDate.isEmpty()) {
+                LocalDate end = LocalDate.parse(endDate);
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.lessThanOrEqualTo(root.get("date"), end));
+            }
+
+            return predicate;
+        };
+    }
+
 
     private EventResponseDto mapToDto(Event event) {
         EventResponseDto eventResponseDto = new EventResponseDto();

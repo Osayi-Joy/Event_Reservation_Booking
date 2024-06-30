@@ -1,7 +1,9 @@
 package com.osayijoy.eventbooking.service;
 
 
-import com.osayijoy.eventbooking.dto.UserDto;
+import com.osayijoy.eventbooking.dto.request.UserRequestDto;
+import com.osayijoy.eventbooking.dto.response.UserResponseDto;
+import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -12,9 +14,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface UserService {
 
-    UserDto createUser(UserDto userDto);
+    UserResponseDto createUser(UserRequestDto userDto);
 
-    UserDto updateUser(String email, UserDto userDto);
+    UserResponseDto updateUser(String email, UserRequestDto userDto);
 
-    UserDto getUserByEmail(String email);
+    UserResponseDto getUserByEmail(String email);
+
+    PaginatedResponseDTO<UserResponseDto> getUsers(int page, int size);
+
+    @Transactional
+    void deleteUserByEmail(String email);
 }

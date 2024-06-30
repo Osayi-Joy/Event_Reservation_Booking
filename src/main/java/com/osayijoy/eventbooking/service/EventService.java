@@ -1,10 +1,8 @@
 package com.osayijoy.eventbooking.service;
 
-import com.osayijoy.eventbooking.dto.EventDto;
 import com.osayijoy.eventbooking.dto.request.EventRequestDTO;
 import com.osayijoy.eventbooking.dto.response.EventResponseDto;
-
-import java.util.List;
+import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
 
 /**
  * @author Joy Osayi
@@ -15,7 +13,10 @@ public interface EventService {
     EventResponseDto createEvent(EventRequestDTO eventDto);
     EventResponseDto updateEvent(Long id, EventRequestDTO eventDto);
     EventResponseDto getEventById(Long id);
-    List<EventResponseDto> getAllEvents();
-    List<EventResponseDto> searchEvents(String name, String category);
+    PaginatedResponseDTO<EventResponseDto> searchEvents(String name,
+                                                        String startDate,
+                                                        String endDate,
+                                                        String category,
+                                                        int page, int size);
     void deleteEvent(Long id);
 }
