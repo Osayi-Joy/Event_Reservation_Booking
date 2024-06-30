@@ -13,4 +13,6 @@ public interface ReservationService {
     List<ReservationDto> getReservationsByUser(Long userId);
     List<ReservationDto> getReservationsByEvent(Long eventId);
     void cancelReservation(Long reservationId);
+
+    List<String> getUserEmailsForEvent(Long eventId);
 }

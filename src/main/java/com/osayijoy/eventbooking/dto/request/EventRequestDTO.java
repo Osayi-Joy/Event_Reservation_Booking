@@ -3,8 +3,8 @@ package com.osayijoy.eventbooking.dto.request;
 import com.osayijoy.eventbooking.enums.Category;
 import lombok.*;
 
-import javax.validation.constraints.*;
-import java.time.LocalDate;
+import jakarta.validation.constraints.*;
+import java.time.LocalDateTime;
 
 /**
  * @author Joy Osayi
@@ -23,7 +23,7 @@ public class EventRequestDTO {
 
     @NotNull(message = "Date is mandatory")
     @FutureOrPresent(message = "Date must be in the present or future")
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Min(value = 1, message = "Available attendees count must be at least 1")
     @Max(value = 1000, message = "Available attendees count cannot exceed 1000")

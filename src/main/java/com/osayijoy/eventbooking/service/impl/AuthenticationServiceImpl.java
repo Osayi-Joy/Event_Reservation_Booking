@@ -40,7 +40,6 @@ public class AuthenticationServiceImpl implements UserDetailsService, Authentica
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Load user by username {}", username);
         User userFoundInDB =
                 userRepository
                         .findFirstByEmailOrderByCreatedDate(username)
@@ -104,7 +103,7 @@ public class AuthenticationServiceImpl implements UserDetailsService, Authentica
                 userDetails.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(" "));
-        claims.put("roles", authorities);
+        claims.put("permissions", authorities);
         claims.put("email", userDetails.getEmail());
         claims.put("name", userDetails.getName());
         return claims;

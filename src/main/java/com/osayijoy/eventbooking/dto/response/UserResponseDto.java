@@ -1,8 +1,6 @@
 package com.osayijoy.eventbooking.dto.response;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+
 
 import com.osayijoy.eventbooking.enums.Role;
 import lombok.*;

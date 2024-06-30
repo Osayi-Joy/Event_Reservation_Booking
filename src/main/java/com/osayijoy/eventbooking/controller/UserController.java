@@ -8,12 +8,13 @@ import com.osayijoy.eventbooking.utils.SwaggerDocUtil;
 import com.osayijoy.eventbooking.utils.response.ControllerResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+
 
 import static com.osayijoy.eventbooking.utils.constants.Constants.USER_API_VI;
 

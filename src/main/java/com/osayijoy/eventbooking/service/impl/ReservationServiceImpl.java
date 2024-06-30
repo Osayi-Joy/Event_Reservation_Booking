@@ -4,7 +4,6 @@ package com.osayijoy.eventbooking.service.impl;
  * @createdOn Jun-28(Fri)-2024
  */
 import com.osayijoy.eventbooking.dto.ReservationDto;
-import com.osayijoy.eventbooking.dto.request.EventRequestDTO;
 import com.osayijoy.eventbooking.exception.InsufficientTicketsException;
 import com.osayijoy.eventbooking.exception.ResourceNotFoundException;
 import com.osayijoy.eventbooking.model.Event;
@@ -14,7 +13,6 @@ import com.osayijoy.eventbooking.repository.EventRepository;
 import com.osayijoy.eventbooking.repository.ReservationRepository;
 import com.osayijoy.eventbooking.repository.UserRepository;
 import com.osayijoy.eventbooking.service.ReservationService;
-import com.osayijoy.eventbooking.utils.BeanUtilWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -87,9 +85,20 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.delete(reservation);
     }
 
+    @Override
+    public List<String> getUserEmailsForEvent(Long eventId) {
+        List<Reservation> reservations = reservationRepository.findByEventId(eventId);
+        return reservations.stream()
+                .map(reservation -> reservation.getUser().getEmail())
+                .distinct()
+                .collect(Collectors.toList());
+    }
     private ReservationDto mapToDto(Reservation reservation) {
         ReservationDto reservationDto = new ReservationDto();
-        BeanUtilWrapper.copyNonNullProperties(reservation, reservationDto);
+        reservationDto.setId(reservation.getId());
+        reservationDto.setEventId(reservation.getEvent().getId());
+        reservationDto.setUserId(reservation.getUser().getId());
+        reservationDto.setAttendeesCount(reservation.getAttendeesCount());
         return reservationDto;
     }
 

@@ -28,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,14 +52,14 @@ class EventServiceImplTest {
         event.setId(1L);
         event.setName("Test Event");
         event.setCategory(Category.CONFERENCE);
-        event.setDate(LocalDate.now());
+        event.setDate(LocalDateTime.now());
         event.setAvailableAttendeesCount(100);
         event.setDescription("Test Description");
 
         eventRequestDTO = new EventRequestDTO();
         eventRequestDTO.setName("Test Event");
         eventRequestDTO.setCategory(Category.CONFERENCE);
-        eventRequestDTO.setDate(LocalDate.now());
+        eventRequestDTO.setDate(LocalDateTime.now());
         eventRequestDTO.setAvailableAttendeesCount(100);
         eventRequestDTO.setDescription("Test Description");
 
@@ -134,6 +135,26 @@ class EventServiceImplTest {
 
         assertThrows(ResourceNotFoundException.class, () -> eventService.getEventById(1L));
         verify(eventRepository, times(1)).findById(eq(1L));
+    }
+
+    @Test
+    public void testGetUpcomingEvents() {
+        Event event1 = new Event();
+        event1.setName("Event 1");
+        event1.setDate(LocalDateTime.now().plusHours(1));
+
+        Event event2 = new Event();
+        event2.setName("Event 2");
+        event2.setDate(LocalDateTime.now().plusHours(2));
+
+        when(eventRepository.findByDateBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Arrays.asList(event1, event2));
+
+        List<EventResponseDto> upcomingEvents = eventService.getUpcomingEvents();
+
+        assertThat(upcomingEvents.size()).isEqualTo(2);
+        assertThat(upcomingEvents.get(0).getName()).isEqualTo("Event 1");
+        assertThat(upcomingEvents.get(1).getName()).isEqualTo("Event 2");
     }
 }
 

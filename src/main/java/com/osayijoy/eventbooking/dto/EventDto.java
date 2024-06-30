@@ -4,12 +4,12 @@ package com.osayijoy.eventbooking.dto;
 import java.time.LocalDate;
 
 import com.osayijoy.eventbooking.enums.Category;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.*;
 
 /**
  * @author Joy Osayi

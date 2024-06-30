@@ -29,6 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +60,7 @@ class ReservationServiceImplTest {
         event.setId(1L);
         event.setName("Test Event");
         event.setCategory(Category.CONFERENCE);
-        event.setDate(LocalDate.now());
+        event.setDate(LocalDateTime.now());
         event.setAvailableAttendeesCount(100);
         event.setDescription("Test Description");
 
@@ -151,6 +152,26 @@ class ReservationServiceImplTest {
 
         assertThrows(ResourceNotFoundException.class, () -> reservationService.cancelReservation(1L));
         verify(reservationRepository, times(1)).findById(eq(1L));
+    }
+    @Test
+    public void testGetUserEmailsForEvent() {
+        User user1 = new User();
+        user1.setEmail("user1@example.com");
+
+        User user2 = new User();
+        user2.setEmail("user2@example.com");
+
+        Reservation reservation1 = new Reservation();
+        reservation1.setUser(user1);
+
+        Reservation reservation2 = new Reservation();
+        reservation2.setUser(user2);
+
+        when(reservationRepository.findByEventId(1L)).thenReturn(Arrays.asList(reservation1, reservation2));
+
+        List<String> userEmails = reservationService.getUserEmailsForEvent(1L);
+
+        assertThat(userEmails).containsExactlyInAnyOrder("user1@example.com", "user2@example.com");
     }
 }
 

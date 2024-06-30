@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  * @author Joy Osayi
  * @createdOn Jun-26(Wed)-2024
@@ -22,7 +24,7 @@ import java.time.LocalDate;
 public class Event extends Auditable<String> implements Serializable {
 
     private String name;
-    private LocalDate date;
+    private LocalDateTime date;
     private int availableAttendeesCount;
     private String description;
 

@@ -10,13 +10,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 /**
  * @author Joy Osayi
@@ -83,6 +83,14 @@ public class EventController {
     public ResponseEntity<Object> deleteEvent(@PathVariable Long id) {
         eventService.deleteEvent(id);
         return ControllerResponse.buildSuccessResponse();
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PostMapping("/{eventId}/notify-users")
+    @Operation(summary = "Notify Users of Upcoming Event", description = "Send notification to users about an upcoming event")
+    public ResponseEntity<Void> notifyUsersOfUpcomingEvent(@PathVariable Long eventId) {
+        eventService.notifyUsersOfUpcomingEvent(eventId);
+        return ResponseEntity.ok().build();
     }
 
 }

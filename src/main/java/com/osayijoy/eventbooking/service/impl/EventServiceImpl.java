@@ -5,7 +5,9 @@ import com.osayijoy.eventbooking.dto.response.EventResponseDto;
 import com.osayijoy.eventbooking.exception.ResourceNotFoundException;
 import com.osayijoy.eventbooking.model.Event;
 import com.osayijoy.eventbooking.repository.EventRepository;
+import com.osayijoy.eventbooking.service.EmailService;
 import com.osayijoy.eventbooking.service.EventService;
+import com.osayijoy.eventbooking.service.ReservationService;
 import com.osayijoy.eventbooking.utils.BeanUtilWrapper;
 import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
 import jakarta.persistence.criteria.Predicate;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 /**
@@ -33,6 +36,8 @@ public class EventServiceImpl implements EventService {
 
 
     private final EventRepository eventRepository;
+    private final ReservationService reservationService;
+    private final EmailService emailService;
 
     @Override
     @Transactional
@@ -93,6 +98,29 @@ public class EventServiceImpl implements EventService {
         eventRepository.delete(event);
     }
 
+    @Override
+    public List<EventResponseDto> getUpcomingEvents() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime next24Hours = now.plusHours(24);
+        List<Event> upcomingEvents = eventRepository.findByDateBetween(now, next24Hours);
+        return upcomingEvents.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+    @Override
+    public void notifyUsersOfUpcomingEvent(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found with id " + eventId));
+
+        List<String> userEmails = reservationService.getUserEmailsForEvent(eventId);
+        String subject = "Upcoming Event Notification";
+        String message = "Dear user, the event " + event.getName() + " will start soon. Get ready!";
+
+        for (String userEmail : userEmails) {
+            emailService.sendEmail(userEmail, subject, message);
+            log.info("Notification sent to {}", userEmail);
+        }
+    }
 
     private Specification<Event> buildSpecification(String name, String startDate, String endDate, String category) {
         return (root, query, criteriaBuilder) -> {
