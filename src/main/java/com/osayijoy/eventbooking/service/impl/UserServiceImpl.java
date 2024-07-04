@@ -83,7 +83,6 @@ public class UserServiceImpl implements UserService {
         List<UserResponseDto> userDtos = userPage.getContent().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
-    log.info("<<<<<<<<<<<<<<< users {}", userDtos);
         return PaginatedResponseDTO.<UserResponseDto>builder()
                 .content(userDtos)
                 .currentPage(userPage.getNumber())

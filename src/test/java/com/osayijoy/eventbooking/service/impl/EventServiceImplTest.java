@@ -27,7 +27,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +66,7 @@ class EventServiceImplTest {
         eventResponseDto.setId(1L);
         eventResponseDto.setName("Test Event");
         eventResponseDto.setCategory(Category.CONCERT);
-        eventResponseDto.setDate(LocalDate.now());
+        eventResponseDto.setDate(LocalDateTime.now());
         eventResponseDto.setAvailableAttendeesCount(100);
         eventResponseDto.setDescription("Test Description");
     }

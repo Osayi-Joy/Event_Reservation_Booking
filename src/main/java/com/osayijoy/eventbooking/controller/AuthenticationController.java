@@ -6,6 +6,9 @@ import com.osayijoy.eventbooking.service.AuthenticationService;
 import com.osayijoy.eventbooking.utils.SwaggerDocUtil;
 import com.osayijoy.eventbooking.utils.response.ControllerResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import static com.osayijoy.eventbooking.utils.SwaggerDocUtil.*;
+import static com.osayijoy.eventbooking.utils.constants.Constants.APPLICATION_JSON;
 import static com.osayijoy.eventbooking.utils.constants.Constants.AUTHENTICATION_API_VI;
 
 /**
@@ -33,10 +38,26 @@ public class AuthenticationController {
     @PostMapping("/login")
     @Operation(
             summary = SwaggerDocUtil.AUTHENTICATION_CONTROLLER_LOGIN_SUMMARY,
-            description = SwaggerDocUtil.AUTHENTICATION_CONTROLLER_LOGIN_DESCRIPTION
+            description = SwaggerDocUtil.AUTHENTICATION_CONTROLLER_LOGIN_DESCRIPTION,
+            tags = SwaggerDocUtil.AUTHENTICATION_CONTROLLER_SUMMARY,
+            responses = {
+                    @ApiResponse(
+                            description = LOGIN_SUCCESS,
+                            responseCode = RESPONSE_CODE_200,
+                            content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = LoginResponse.class))),
+                    @ApiResponse(
+                            description = BAD_CREDENTIALS,
+                            responseCode = RESPONSE_CODE_401,
+                            content = @Content(mediaType = APPLICATION_JSON)),
+                    @ApiResponse(
+                            description = SwaggerDocUtil.BAD_REQUEST,
+                            responseCode = RESPONSE_CODE_400,
+                            content = @Content(mediaType = APPLICATION_JSON))
+            }
     )
     public ResponseEntity<Object> login(@Valid @RequestBody Credentials loginRequestDTO) {
         LoginResponse response = authenticationService.authenticate(loginRequestDTO);
         return ControllerResponse.buildSuccessResponse(response);
     }
 }
+

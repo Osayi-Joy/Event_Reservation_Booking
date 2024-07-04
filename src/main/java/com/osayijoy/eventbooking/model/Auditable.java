@@ -36,6 +36,4 @@ public  class Auditable<T> {
     @LastModifiedDate
     protected LocalDateTime lastModifiedDate;
 
-    @Column(name = "is_deleted",nullable = false)
-    private boolean isDeleted = false;
 }

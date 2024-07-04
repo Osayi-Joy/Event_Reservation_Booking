@@ -17,7 +17,9 @@ public class Constants {
     public static final String AUTHENTICATION_API_VI = API_V1 + "authentication/process/";
     public static final String USER_API_VI = API_V1 + "user/process/";
     public static final String EVENT_API_VI = API_V1 + "event/process/";
-
-    private Constants(){
+    public static final String RESERVATION_API_V1 = "/api/v1/reservations";
+    public static final String APPLICATION_JSON = "application/json";
+    private Constants() {
     }
 }
+

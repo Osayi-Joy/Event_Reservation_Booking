@@ -2,20 +2,20 @@ package com.osayijoy.eventbooking.controller;
 
 import com.osayijoy.eventbooking.dto.ReservationDto;
 import com.osayijoy.eventbooking.service.ReservationService;
+import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
+import com.osayijoy.eventbooking.utils.response.ControllerResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import static com.osayijoy.eventbooking.utils.SwaggerDocUtil.*;
+import static com.osayijoy.eventbooking.utils.constants.Constants.*;
 
 /**
  * @author Joy Osayi
@@ -23,120 +23,147 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping("/api/v1/reservations")
+@RequestMapping(RESERVATION_API_V1)
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "Reservation Management", description = "Endpoints for managing reservations")
-@ApiResponses({
-        @ApiResponse(description = "Success", responseCode = "200", content = @Content),
-        @ApiResponse(description = "Created", responseCode = "201", content = @Content),
-        @ApiResponse(description = "Bad Request", responseCode = "400", content = @Content),
-        @ApiResponse(description = "Not Found", responseCode = "404", content = @Content),
-        @ApiResponse(description = "Internal Error", responseCode = "500", content = @Content)
-})
 public class ReservationController {
     private final ReservationService reservationService;
 
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAuthority('ROLE_USER') or hasAuthority('ROLE_ADMIN')")
     @PostMapping
     @Operation(
-            summary = "Create Reservation",
-            description = "Create a new reservation for an event",
-            tags = "Reservation Management",
+            summary = CREATE_RESERVATION_SUMMARY,
+            description = CREATE_RESERVATION_DESCRIPTION,
+            tags = RESERVATION_MANAGEMENT_TAG,
             responses = {
                     @ApiResponse(
-                            description = "Reservation Created",
-                            responseCode = "201",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ReservationDto.class))
-                    ),
+                            description = RESERVATION_CREATED,
+                            responseCode = RESPONSE_CODE_201,
+                            content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ReservationDto.class))),
                     @ApiResponse(
-                            description = "Bad Request",
-                            responseCode = "400",
-                            content = @Content(mediaType = "application/json")
-                    )
+                            description = BAD_REQUEST,
+                            responseCode = RESPONSE_CODE_400,
+                            content = @Content(mediaType = APPLICATION_JSON)),
+                    @ApiResponse(
+                            description = UNAUTHORIZED,
+                            responseCode = RESPONSE_CODE_401,
+                            content = @Content(mediaType = APPLICATION_JSON))
             }
     )
-    public ResponseEntity<ReservationDto> createReservation(
+    public ResponseEntity<Object> createReservation(
             @RequestParam Long eventId,
-            @RequestParam Long userId,
+            @RequestParam String email,
             @RequestParam int attendeesCount) {
-        ReservationDto createdReservation = reservationService.createReservation(eventId, userId, attendeesCount);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation);
+        ReservationDto createdReservation = reservationService.createReservation(eventId, email, attendeesCount);
+        return ControllerResponse.buildSuccessResponse(createdReservation, HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER') or hasAuthority('ROLE_ADMIN')")
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user/{email}")
     @Operation(
-            summary = "Get Reservations by User",
-            description = "Retrieve reservations made by a specific user",
-            tags = "Reservation Management",
+            summary = GET_RESERVATIONS_BY_USER_SUMMARY,
+            description = GET_RESERVATIONS_BY_USER_DESCRIPTION,
+            tags = RESERVATION_MANAGEMENT_TAG,
             responses = {
                     @ApiResponse(
-                            description = "Reservations Found",
-                            responseCode = "200",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ReservationDto.class))
-                    ),
+                            description = RESERVATIONS_FOUND,
+                            responseCode = RESPONSE_CODE_200,
+                            content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ReservationDto.class))),
                     @ApiResponse(
-                            description = "Not Found",
-                            responseCode = "404",
-                            content = @Content(mediaType = "application/json")
-                    )
+                            description = NOT_FOUND,
+                            responseCode = RESPONSE_CODE_404,
+                            content = @Content(mediaType = APPLICATION_JSON)),
+                    @ApiResponse(
+                            description = UNAUTHORIZED,
+                            responseCode = RESPONSE_CODE_401,
+                            content = @Content(mediaType = APPLICATION_JSON))
             }
     )
-    public ResponseEntity<List<ReservationDto>> getReservationsByUser(@PathVariable Long userId) {
-        List<ReservationDto> reservations = reservationService.getReservationsByUser(userId);
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<Object> getReservationsByUser(@PathVariable String email,
+           @RequestParam(defaultValue = PAGE_NUMBER_DEFAULT_VALUE, required = false) int page,
+           @RequestParam(defaultValue = PAGE_SIZE_DEFAULT_VALUE, required = false) int size) {
+        PaginatedResponseDTO<ReservationDto> reservations = reservationService.getReservationsByUser(email, page, size);
+        return ControllerResponse.buildSuccessResponse(reservations);
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER') or hasAuthority('ROLE_ADMIN')")
     @GetMapping("/event/{eventId}")
     @Operation(
-            summary = "Get Reservations by Event",
-            description = "Retrieve reservations made for a specific event",
-            tags = "Reservation Management",
+            summary = GET_RESERVATIONS_BY_EVENT_SUMMARY,
+            description = GET_RESERVATIONS_BY_EVENT_DESCRIPTION,
+            tags = RESERVATION_MANAGEMENT_TAG,
             responses = {
                     @ApiResponse(
-                            description = "Reservations Found",
-                            responseCode = "200",
-                            content = @Content(mediaType = "application/json",
-                                    schema = @Schema(implementation = ReservationDto.class))
-                    ),
+                            description = RESERVATIONS_FOUND,
+                            responseCode = RESPONSE_CODE_200,
+                            content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ReservationDto.class))),
                     @ApiResponse(
-                            description = "Not Found",
-                            responseCode = "404",
-                            content = @Content(mediaType = "application/json")
-                    )
+                            description = NOT_FOUND,
+                            responseCode = RESPONSE_CODE_404,
+                            content = @Content(mediaType = APPLICATION_JSON)),
+                    @ApiResponse(
+                            description = UNAUTHORIZED,
+                            responseCode = RESPONSE_CODE_401,
+                            content = @Content(mediaType = APPLICATION_JSON))
             }
     )
-    public ResponseEntity<List<ReservationDto>> getReservationsByEvent(@PathVariable Long eventId) {
-        List<ReservationDto> reservations = reservationService.getReservationsByEvent(eventId);
-        return ResponseEntity.ok(reservations);
+    public ResponseEntity<Object> getReservationsByEvent(@PathVariable Long eventId,
+           @RequestParam(defaultValue = PAGE_NUMBER_DEFAULT_VALUE, required = false) int page,
+           @RequestParam(defaultValue = PAGE_SIZE_DEFAULT_VALUE, required = false) int size) {
+        PaginatedResponseDTO<ReservationDto> reservations = reservationService.getReservationsByEvent(eventId, page, size);
+        return ControllerResponse.buildSuccessResponse(reservations);
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_USER') or hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/event/{eventId}/{email}")
+    @Operation(
+            summary = GET_RESERVATIONS_BY_EVENT_SUMMARY,
+            description = GET_RESERVATIONS_BY_EVENT_DESCRIPTION,
+            tags = RESERVATION_MANAGEMENT_TAG,
+            responses = {
+                    @ApiResponse(
+                            description = RESERVATIONS_FOUND,
+                            responseCode = RESPONSE_CODE_200,
+                            content = @Content(mediaType = APPLICATION_JSON, schema = @Schema(implementation = ReservationDto.class))),
+                    @ApiResponse(
+                            description = NOT_FOUND,
+                            responseCode = RESPONSE_CODE_404,
+                            content = @Content(mediaType = APPLICATION_JSON)),
+                    @ApiResponse(
+                            description = UNAUTHORIZED,
+                            responseCode = RESPONSE_CODE_401,
+                            content = @Content(mediaType = APPLICATION_JSON))
+            }
+    )
+    public ResponseEntity<Object> getReservation(@PathVariable Long eventId, @PathVariable String email){
+              ReservationDto reservation = reservationService.getAReservation(eventId, email);
+        return ControllerResponse.buildSuccessResponse(reservation);
     }
 
     @PreAuthorize("hasAuthority('ROLE_USER') or hasAuthority('ROLE_ADMIN')")
     @DeleteMapping("/{reservationId}")
     @Operation(
-            summary = "Cancel Reservation",
-            description = "Cancel an existing reservation",
-            tags = "Reservation Management",
+            summary = CANCEL_RESERVATION_SUMMARY,
+            description = CANCEL_RESERVATION_DESCRIPTION,
+            tags = RESERVATION_MANAGEMENT_TAG,
             responses = {
                     @ApiResponse(
-                            description = "Reservation Cancelled",
-                            responseCode = "204",
-                            content = @Content
-                    ),
+                            description = RESERVATION_CANCELLED,
+                            responseCode = RESPONSE_CODE_204,
+                            content = @Content),
                     @ApiResponse(
-                            description = "Not Found",
-                            responseCode = "404",
-                            content = @Content(mediaType = "application/json")
-                    )
+                            description = NOT_FOUND,
+                            responseCode = RESPONSE_CODE_404,
+                            content = @Content(mediaType = APPLICATION_JSON)),
+                    @ApiResponse(
+                            description = UNAUTHORIZED,
+                            responseCode = RESPONSE_CODE_401,
+                            content = @Content(mediaType = APPLICATION_JSON))
             }
     )
-    public ResponseEntity<Void> cancelReservation(@PathVariable Long reservationId) {
+    public ResponseEntity<Object> cancelReservation(@PathVariable Long reservationId) {
         reservationService.cancelReservation(reservationId);
-        return ResponseEntity.noContent().build();
+        return ControllerResponse.buildSuccessResponse();
     }
 }
 

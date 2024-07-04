@@ -3,7 +3,7 @@ package com.osayijoy.eventbooking.dto.response;
 import com.osayijoy.eventbooking.enums.Category;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author Joy Osayi
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class EventResponseDto {
     private Long id;
     private String name;
-    private LocalDate date;
+    private LocalDateTime date;
     private int availableAttendeesCount;
     private String description;
     private Category category;

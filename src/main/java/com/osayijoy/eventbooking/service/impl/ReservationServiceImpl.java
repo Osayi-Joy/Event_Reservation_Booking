@@ -13,8 +13,12 @@ import com.osayijoy.eventbooking.repository.EventRepository;
 import com.osayijoy.eventbooking.repository.ReservationRepository;
 import com.osayijoy.eventbooking.repository.UserRepository;
 import com.osayijoy.eventbooking.service.ReservationService;
+import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,12 +37,12 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Transactional
-    public ReservationDto createReservation(Long eventId, Long userId, int attendeesCount) {
+    public ReservationDto createReservation(Long eventId, String email, int attendeesCount) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Event not found with id " + eventId));
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
+        User user = userRepository.findFirstByEmailOrderByCreatedDate(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with email " + email));
 
         if (event.getAvailableAttendeesCount() < attendeesCount) {
             throw new InsufficientTicketsException("Not enough tickets available for event " + eventId);
@@ -57,19 +61,44 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<ReservationDto> getReservationsByUser(Long userId) {
-        List<Reservation> reservations = reservationRepository.findByUserId(userId);
-        return reservations.stream()
+    public PaginatedResponseDTO<ReservationDto>getReservationsByUser(String email, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reservation> reservations = reservationRepository.findByUserEmail(email, pageable);
+        var response = reservations.stream()
                 .map(this::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
+        return PaginatedResponseDTO.<ReservationDto>builder()
+                .content(response)
+                .currentPage(reservations.getNumber())
+                .totalPages(reservations.getTotalPages())
+                .totalItems(reservations.getTotalElements())
+                .isFirstPage(reservations.isFirst())
+                .isLastPage(reservations.isLast())
+                .build();
     }
 
     @Override
-    public List<ReservationDto> getReservationsByEvent(Long eventId) {
-        List<Reservation> reservations = reservationRepository.findByEventId(eventId);
-        return reservations.stream()
+    public PaginatedResponseDTO<ReservationDto> getReservationsByEvent(Long eventId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reservation> reservations = reservationRepository.findByEventId(eventId, pageable);
+        var response = reservations.stream()
                 .map(this::mapToDto)
-                .collect(Collectors.toList());
+                .toList();
+        return PaginatedResponseDTO.<ReservationDto>builder()
+                .content(response)
+                .currentPage(reservations.getNumber())
+                .totalPages(reservations.getTotalPages())
+                .totalItems(reservations.getTotalElements())
+                .isFirstPage(reservations.isFirst())
+                .isLastPage(reservations.isLast())
+                .build();
+    }
+
+    @Override
+    public ReservationDto getAReservation(Long eventId, String email) {
+        Reservation reservation = reservationRepository.findByEventIdAndUserEmail(eventId, email)
+                .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
+        return mapToDto(reservation);
     }
 
     @Override
@@ -93,11 +122,15 @@ public class ReservationServiceImpl implements ReservationService {
                 .distinct()
                 .collect(Collectors.toList());
     }
+
     private ReservationDto mapToDto(Reservation reservation) {
         ReservationDto reservationDto = new ReservationDto();
         reservationDto.setId(reservation.getId());
         reservationDto.setEventId(reservation.getEvent().getId());
-        reservationDto.setUserId(reservation.getUser().getId());
+        reservationDto.setEventName(reservation.getEvent().getName());
+        reservationDto.setEventDate(reservation.getEvent().getDate().toString());
+        reservationDto.setAttendeeName(reservation.getUser().getName());
+        reservationDto.setUserEmail(reservation.getUser().getEmail());
         reservationDto.setAttendeesCount(reservation.getAttendeesCount());
         return reservationDto;
     }

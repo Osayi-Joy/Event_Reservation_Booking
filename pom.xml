@@ -45,7 +45,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.0.33</version>
+            <version>8.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -76,6 +76,21 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version>
         </dependency>
 
         <dependency>
@@ -132,6 +147,12 @@
             <groupId>com.mailgun</groupId>
             <artifactId>mailgun-java</artifactId>
             <version>1.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.docker-java</groupId>
+            <artifactId>docker-java-api</artifactId>
+            <version>3.3.6</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

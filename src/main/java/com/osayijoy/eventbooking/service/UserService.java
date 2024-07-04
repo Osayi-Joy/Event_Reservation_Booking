@@ -4,7 +4,6 @@ package com.osayijoy.eventbooking.service;
 import com.osayijoy.eventbooking.dto.request.UserRequestDto;
 import com.osayijoy.eventbooking.dto.response.UserResponseDto;
 import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Joy Osayi
@@ -21,7 +20,5 @@ public interface UserService {
     UserResponseDto getUserByEmail(String email);
 
     PaginatedResponseDTO<UserResponseDto> getUsers(int page, int size);
-
-    @Transactional
     void deleteUserByEmail(String email);
 }

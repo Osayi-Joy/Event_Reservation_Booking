@@ -36,6 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+
     private void sendNotificationToUsers(EventResponseDto event) {
         List<String> userEmails = reservationService.getUserEmailsForEvent(event.getId());
         String subject = "Upcoming Event Notification";

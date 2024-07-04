@@ -1,9 +1,6 @@
 package com.osayijoy.eventbooking.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * @author Joy Osayi
@@ -11,12 +8,16 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReservationDto {
     private Long id;
     private Long eventId;
-    private Long userId;
+    private String eventName;
+    private String eventDate;
+    private String attendeeName;
+    private String userEmail;
     private int attendeesCount;
 
 }

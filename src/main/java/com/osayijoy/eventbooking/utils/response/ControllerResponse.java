@@ -27,8 +27,17 @@ public class ControllerResponse {
 
  }
 
- public static   ResponseEntity<Object> buildSuccessResponse(Object responseData ){
+ public static   ResponseEntity<Object> buildSuccessResponse(Object responseData){
   return ResponseEntity.ok(ApiResponseJson.builder()
+          .success(true)
+          .data(responseData)
+          .message(DEFAULT_SUCCESS_MESSAGE)
+          .errors(null)
+          .build());
+
+ }
+ public static   ResponseEntity<Object> buildSuccessResponse(Object responseData, HttpStatus status){
+  return ResponseEntity.status(status).body(ApiResponseJson.builder()
           .success(true)
           .data(responseData)
           .message(DEFAULT_SUCCESS_MESSAGE)

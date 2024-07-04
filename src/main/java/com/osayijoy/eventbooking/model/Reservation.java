@@ -19,9 +19,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Reservation extends Auditable<String> implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "event_id")

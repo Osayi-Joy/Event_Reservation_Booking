@@ -81,7 +81,6 @@ class UserServiceImplTest {
         assertNotNull(createdUser);
         assertEquals(user.getName(), createdUser.getName());
         assertEquals(user.getEmail(), createdUser.getEmail());
-//        assertEquals("password", createdUser.getPassword());
         assertEquals(Role.ROLE_USER, createdUser.getRole());
     }
 
@@ -100,7 +99,6 @@ class UserServiceImplTest {
         assertNotNull(createdAdmin);
         assertEquals(adminUser.getName(), createdAdmin.getName());
         assertEquals(adminUser.getEmail(), createdAdmin.getEmail());
-//        assertEquals("password", createdAdmin.getPassword());
         assertEquals(Role.ROLE_ADMIN, createdAdmin.getRole());
     }
 
@@ -109,9 +107,7 @@ class UserServiceImplTest {
 
         when(userRepository.existsByEmail(anyString())).thenReturn(true);
 
-        assertThrows(BadRequestException.class, () -> {
-            userService.createUser(userDto);
-        });
+        assertThrows(BadRequestException.class, () -> userService.createUser(userDto));
     }
 
     @Test
@@ -145,9 +141,7 @@ class UserServiceImplTest {
 
         assertThrows(
                 ResourceNotFoundException.class,
-                () -> {
-                    userService.getUserByEmail("nonexistent@example.com");
-                });
+                () -> userService.getUserByEmail("nonexistent@example.com"));
     }
     @Test
     public void testGetUsers() {
