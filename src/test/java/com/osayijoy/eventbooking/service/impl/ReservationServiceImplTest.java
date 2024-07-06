@@ -10,7 +10,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import com.osayijoy.eventbooking.dto.ReservationDto;
+import com.osayijoy.eventbooking.dto.response.ReservationDto;
 import com.osayijoy.eventbooking.enums.Category;
 import com.osayijoy.eventbooking.exception.InsufficientTicketsException;
 import com.osayijoy.eventbooking.exception.ResourceNotFoundException;

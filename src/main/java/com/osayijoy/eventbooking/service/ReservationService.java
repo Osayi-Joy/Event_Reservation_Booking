@@ -1,6 +1,6 @@
 package com.osayijoy.eventbooking.service;
 
-import com.osayijoy.eventbooking.dto.ReservationDto;
+import com.osayijoy.eventbooking.dto.response.ReservationDto;
 import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
 
 import java.util.List;

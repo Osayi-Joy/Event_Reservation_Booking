@@ -31,7 +31,7 @@ public final class BeanUtilWrapper {
             return Objects.isNull(o);
         }).map(Field::getName).toList();
         String[] emptyFieldsArray = new String[emptyFieldNames.size()];
-        return (String[])emptyFieldNames.toArray(emptyFieldsArray);
+        return emptyFieldNames.toArray(emptyFieldsArray);
     }
 
     private BeanUtilWrapper() {

@@ -3,7 +3,7 @@ package com.osayijoy.eventbooking.service.impl;
  * @author Joy Osayi
  * @createdOn Jun-28(Fri)-2024
  */
-import com.osayijoy.eventbooking.dto.ReservationDto;
+import com.osayijoy.eventbooking.dto.response.ReservationDto;
 import com.osayijoy.eventbooking.exception.InsufficientTicketsException;
 import com.osayijoy.eventbooking.exception.ResourceNotFoundException;
 import com.osayijoy.eventbooking.model.Event;

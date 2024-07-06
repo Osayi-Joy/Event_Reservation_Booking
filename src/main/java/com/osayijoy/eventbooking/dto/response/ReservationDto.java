@@ -1,4 +1,4 @@
-package com.osayijoy.eventbooking.dto;
+package com.osayijoy.eventbooking.dto.response;
 
 import lombok.*;
 

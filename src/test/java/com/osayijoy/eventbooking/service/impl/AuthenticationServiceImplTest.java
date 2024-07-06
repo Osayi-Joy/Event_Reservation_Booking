@@ -1,6 +1,5 @@
 package com.osayijoy.eventbooking.service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author Joy Osayi
  * @createdOn Jun-30(Sun)-2024
@@ -12,7 +11,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import com.osayijoy.eventbooking.config.security.JwtHelper;
-import com.osayijoy.eventbooking.dto.UserAuthDetials;
+import com.osayijoy.eventbooking.dto.response.UserAuthDetials;
 import com.osayijoy.eventbooking.dto.request.Credentials;
 import com.osayijoy.eventbooking.dto.response.LoginResponse;
 import com.osayijoy.eventbooking.enums.Role;
@@ -28,8 +27,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+        import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
 import java.util.Map;

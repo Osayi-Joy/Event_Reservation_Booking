@@ -1,6 +1,6 @@
 package com.osayijoy.eventbooking.controller;
 
-import com.osayijoy.eventbooking.dto.ReservationDto;
+import com.osayijoy.eventbooking.dto.response.ReservationDto;
 import com.osayijoy.eventbooking.service.ReservationService;
 import com.osayijoy.eventbooking.utils.PaginatedResponseDTO;
 import com.osayijoy.eventbooking.utils.response.ControllerResponse;

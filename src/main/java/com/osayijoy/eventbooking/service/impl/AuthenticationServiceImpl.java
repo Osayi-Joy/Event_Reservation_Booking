@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.osayijoy.eventbooking.config.security.JwtHelper;
-import com.osayijoy.eventbooking.dto.UserAuthDetials;
+import com.osayijoy.eventbooking.dto.response.UserAuthDetials;
 import com.osayijoy.eventbooking.dto.request.Credentials;
 import com.osayijoy.eventbooking.dto.response.LoginResponse;
 import com.osayijoy.eventbooking.exception.BadRequestException;
