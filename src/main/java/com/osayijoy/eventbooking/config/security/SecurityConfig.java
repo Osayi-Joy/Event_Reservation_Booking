@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestTemplate;
 
-import java.security.KeyPair;
 
 import static com.osayijoy.eventbooking.utils.constants.Constants.AUTHENTICATION_API_VI;
 import static com.osayijoy.eventbooking.utils.constants.Constants.USER_API_VI;
@@ -61,9 +60,7 @@ public class SecurityConfig {
                         "/v3/api-docs/**",
                         "/documentation/v3/api-docs",
                         "/download-license",
-                        "/actuator/**",
-                        "/api/v1/account-service/administrator/process/accept-invitation/**",
-                                "/api/v1/account-service/customers/process/create")
+                        "/actuator/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

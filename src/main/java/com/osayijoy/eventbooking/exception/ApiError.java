@@ -19,10 +19,5 @@ public class ApiError {
     public static final String ERROR_UNKNOWN = "90";
 
     private String message;
-    private String code;
 
-    public ApiError(String message, String code) {
-        this.message = message;
-        this.code = code;
-    }
 }

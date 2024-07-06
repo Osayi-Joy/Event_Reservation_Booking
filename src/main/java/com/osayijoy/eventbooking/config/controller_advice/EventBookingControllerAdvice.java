@@ -43,7 +43,7 @@ public class EventBookingControllerAdvice {
             message = "The access token supplied is invalid or expired";
         }
 
-        ApiError error = new ApiError(message, "99");
+        ApiError error = new ApiError(message);
         ApiResponseJson<String> responseJson =
                 ApiResponseJson.<String>builder()
                         .data(null)
@@ -61,7 +61,7 @@ public class EventBookingControllerAdvice {
         logger.severe("an error occurred: " + exception);
 
         return ControllerResponse.buildFailureResponse(
-                new ApiError("Kindly reach out to support for help", "09"),
+                new ApiError("Kindly reach out to support for help"),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -69,7 +69,7 @@ public class EventBookingControllerAdvice {
     public ResponseEntity<Object> handleDateTimeParseException(DateTimeParseException exception) {
         logger.severe("an error occurred: " + exception);
         return ControllerResponse.buildFailureResponse(
-                new ApiError(exception.getParsedString().concat(" is not in the valid date format"), "10"),
+                new ApiError(exception.getParsedString().concat(" is not in the valid date format")),
                 HttpStatus.BAD_REQUEST);
     }
 
@@ -77,24 +77,24 @@ public class EventBookingControllerAdvice {
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Object> handleNotFoundExceptions(ResourceNotFoundException ex) {
         return ControllerResponse.buildFailureResponse(
-                new ApiError(ex.getMessage(), "11"), HttpStatus.NOT_FOUND);
+                new ApiError(ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<Object> handleBadRequestExceptions(BadRequestException ex) {
         return ControllerResponse.buildFailureResponse(
-                new ApiError(ex.getMessage(), "12"), HttpStatus.BAD_REQUEST);
+                new ApiError(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(InsufficientTicketsException.class)
     public ResponseEntity<Object> handleInsufficientTicketsException(InsufficientTicketsException ex) {
         return ControllerResponse.buildFailureResponse(
-                new ApiError(ex.getMessage(), "12"), HttpStatus.BAD_REQUEST);
+                new ApiError(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGenericExceptions(Exception ex) {
         return ControllerResponse.buildFailureResponse(
-                new ApiError(ex.getMessage(), "13"), HttpStatus.INTERNAL_SERVER_ERROR);
+                new ApiError(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
 

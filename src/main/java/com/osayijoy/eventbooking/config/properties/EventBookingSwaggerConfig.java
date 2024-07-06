@@ -43,7 +43,7 @@ public class EventBookingSwaggerConfig {
                 .addServersItem(new Server().description("Local Server").url("http://localhost:8080"))
                 .addServersItem(
                         new Server()
-                                .description("Group 2 Interswitch Job Shadowing")
+                                .description("Event Booking Server")
                                 .url(swaggerUiUrl))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(

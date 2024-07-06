@@ -26,6 +26,7 @@ import static com.osayijoy.eventbooking.utils.constants.Constants.*;
  * @author Joy Osayi
  * @createdOn Jun-26(Wed)-2024
  */
+
 @RestController
 @RequestMapping(EVENT_API_VI)
 @RequiredArgsConstructor
@@ -170,29 +171,4 @@ public class EventController {
         return ControllerResponse.buildSuccessResponse();
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    @PostMapping("/{eventId}/notify-users")
-    @Operation(
-            summary = NOTIFY_USERS_SUMMARY,
-            description = NOTIFY_USERS_DESCRIPTION,
-            tags = EVENT_CONTROLLER_SUMMARY,
-            responses = {
-                    @ApiResponse(
-                            description = NOTIFICATION_SENT,
-                            responseCode = RESPONSE_CODE_200,
-                            content = @Content(mediaType = APPLICATION_JSON)),
-                    @ApiResponse(
-                            description = NOT_FOUND,
-                            responseCode = RESPONSE_CODE_404,
-                            content = @Content(mediaType = APPLICATION_JSON)),
-                    @ApiResponse(
-                            description = UNAUTHORIZED,
-                            responseCode = RESPONSE_CODE_401,
-                            content = @Content(mediaType = APPLICATION_JSON))
-            }
-    )
-    public ResponseEntity<Void> notifyUsersOfUpcomingEvent(@PathVariable Long eventId) {
-        eventService.notifyUsersOfUpcomingEvent(eventId);
-        return ResponseEntity.ok().build();
-    }
 }

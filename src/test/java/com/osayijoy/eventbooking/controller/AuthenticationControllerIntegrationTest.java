@@ -36,9 +36,7 @@ class AuthenticationControllerIntegrationTest extends TestHelper{
 
     @Autowired
     private ObjectMapper objectMapper;
-    private static String ACCESS_TOKEN="";
     private static final String USERNAME = "osayijoy17@gmail.com";
-    private static final String ADMIN_EMAIL = "osayijoy@musulasoft.com";
 
 
 

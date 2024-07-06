@@ -13,19 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>eventBooking</name>
     <description>eventBooking</description>
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -41,11 +29,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.mysql</groupId>
-            <artifactId>mysql-connector-j</artifactId>
-            <version>8.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -87,11 +70,6 @@
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.9.0</version>
-        </dependency>
 
         <dependency>
             <groupId>jakarta.validation</groupId>
@@ -104,7 +82,6 @@
             <version>2.1.3</version>
             <scope>provided</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.eclipse.angus/angus-mail -->
         <dependency>
             <groupId>org.eclipse.angus</groupId>
             <artifactId>angus-mail</artifactId>
@@ -114,7 +91,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-resource-server</artifactId>
-            <version>6.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
@@ -124,12 +100,6 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-jose</artifactId>
-            <version>6.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>2.2.8</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -140,20 +110,8 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
-            <version>2.2.6.RELEASE</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.mailgun</groupId>
-            <artifactId>mailgun-java</artifactId>
-            <version>1.0.8</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.docker-java</groupId>
-            <artifactId>docker-java-api</artifactId>
-            <version>3.3.6</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>

@@ -10,6 +10,9 @@ public class SwaggerDocUtil {
     public static final String AUTHENTICATION_CONTROLLER_LOGIN_SUMMARY = "User Login";
     public static final String AUTHENTICATION_CONTROLLER_LOGIN_DESCRIPTION = "Endpoint for user login authentication";
 
+    public static final String RESERVATION_CONTROLLER_SUMMARY = "Reservation Controller";
+    public static final String RESERVATION_CONTROLLER_DESCRIPTION = "APIs for reservation controller";
+
     public static final String USER_CONTROLLER_SUMMARY = "User Controller";
     public static final String USER_CONTROLLER_DESCRIPTION = "APIs for user operations";
 
@@ -47,8 +50,6 @@ public class SwaggerDocUtil {
     public static final String DELETE_EVENT_SUMMARY = "Delete Event";
     public static final String DELETE_EVENT_DESCRIPTION = "Delete an event by its ID";
 
-    public static final String NOTIFY_USERS_SUMMARY = "Notify Users of Upcoming Event";
-    public static final String NOTIFY_USERS_DESCRIPTION = "Send notification to users about an upcoming event";
 
     public static final String CREATE_RESERVATION_SUMMARY = "Create Reservation";
     public static final String CREATE_RESERVATION_DESCRIPTION = "Create a new reservation for an event";
@@ -71,7 +72,6 @@ public class SwaggerDocUtil {
     public static final String EVENT_UPDATED = "Event Updated";
     public static final String EVENT_FOUND = "Event Found";
     public static final String EVENT_DELETED = "Event Deleted";
-    public static final String NOTIFICATION_SENT = "Notification Sent";
     public static final String EVENTS_FOUND = "Events Found";
 
     public static final String USER_CREATED = "User Created";

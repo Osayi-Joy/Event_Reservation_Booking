@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,7 +25,7 @@ import static com.osayijoy.eventbooking.utils.constants.Constants.*;
 @RestController
 @RequestMapping(RESERVATION_API_V1)
 @RequiredArgsConstructor
-@Slf4j
+@Tag(name = RESERVATION_CONTROLLER_SUMMARY, description = RESERVATION_CONTROLLER_DESCRIPTION)
 public class ReservationController {
     private final ReservationService reservationService;
 

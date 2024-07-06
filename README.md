@@ -1,63 +1,179 @@
-# Event Booking
+# Event Booking System
 
-[[_TOC_]]
+A REST API to manage event bookings, allowing users to create, find, and reserve tickets for events, view and manage
+their reservations, and receive notifications before events start.
 
----
+## Features
 
-:scroll: **START**
+- User account creation and authentication
+- Event creation, updating, deletion, and search
+- Ticket reservation and management
+- Notifications for upcoming events
 
-## Introduction
+## Prerequisites
 
-In today's fast-paced world, the convenience of booking systems has become an essential aspect of daily life. From booking tickets for a concert or reserving a spot at a conference, these systems are used widely by individuals and businesses alike.
+- JDK 11+
+- Maven 3.6+
 
----
+## Running the Application
 
-## Task Description
+### Using H2 Database
 
-The system will allow users to create, find and reserve tickets for events, view and manage their reservations and to be notified before the event kickoff.
+1. Build the project:
+    ```bash
+    mvn clean install
+    ```
 
-A **user** has:
-- name (limited to 100 characters);
-- email (valid email format);
-- password (minimum 8 characters).
+2. Compile the project:
+    ```bash
+    mvn compile
+    ```
 
-An **event** has:
-- name (limited to 100 characters);
-- date (in a valid date format);
-- available attendees count (positive integer limited to 1000);
-- event description (limited to 500 characters).
-- category (Concert, Conference, Game)
+3. Run the application:
+    ```bash
+    mvn spring-boot:run
+    ```
 
-Develop a set of REST service APIs based on the swagger file provided - [swagger file](event-booking-swagger.yml), that allows users to:
+The application will be accessible at `http://localhost:8080`.
 
-- Create an account;
-- User authentication to log into the system;
-- Create events;
-- Search and reserve tickets for events;
-- Send notification to users before event starts.
+### Using Docker (Optional)
 
-> Feel free to make assumptions for the design approach. 
+If you prefer to use Docker, you can set up a containerized environment. Ensure you have Docker installed and running on
+your machine.
 
-## Requirements
+## Swagger Documentation
 
-While implementing your solution **please take care of the following requirements:**
+Access the API documentation at `http://localhost:8080/documentation/swagger-ui/index.html#/`.
 
-### Functional requirements
+## Running Tests
 
-- The REST API methods should be implemented based on the specification provided in the linked swagger file;
-- Add 2 new methods, one to **view** your booked events and one to **cancel** your reservation _**(both should be authorized)**_;
-- Introduce a periodic task to send notifications for upcoming events to users and create history/audit event log for this.
-- No need for UI;
+1. Run unit tests:
+    ```bash
+    mvn test
+    ```
 
-### Non-functional requirements
+2. Run integration tests:
+    ```bash
+    mvn verify
+    ```
 
-- The project MUST be buildable and runnable;
-- The project MUST have Unit tests;
-- The project MUST have a README file with build/run/test instructions (use a DB that can be run locally, e.g. in-memory, via container);
-- Any data required by the application to run (e.g. reference tables, dummy data) MUST be preloaded in the database;
-- Input/output data MUST be in JSON format;
-- Use a framework of your choice, but popular, up-to-date, and long-term support versions are recommended.
+Integration tests use PostgreSQLTestContainer to simulate the database environment.
 
----
+## Preloaded Data
 
-:scroll: **END**
+The application uses H2 in-memory database for local development. Necessary reference data and dummy data are preloaded
+on startup.
+
+For integration tests, PostgreSQLTestContainer is used to ensure the tests run in a controlled environment with data
+preloaded as needed.
+
+## Additional Configuration
+
+- Application properties can be configured in `src/main/resources/application.properties`.
+- For test configurations, use `src/test/resources/application-test.properties`.
+
+## CURL Commands for Endpoints
+
+Here are some common CURL commands for the endpoints:
+
+User Endpoints
+
+- Create a new user:
+
+```bash
+  curl -X POST "http://localhost:8080/api/v1/event-booking/users/" -H "Content-Type: application/json" -d '{"name":"Joy Osayi","email":"osayijoy17@gmail.com","password":"password"}'
+```
+
+- User login:
+
+```bash
+curl -X POST "http://localhost:8080/api/v1/event-booking/authentication/login" -H "Content-Type: application/json" -d '{"email":"osayijoy17@gmail.com","password":"password"}'
+```
+
+- Get user by email:
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/event-booking/users/osayijoy17@gmail.com" H "Authorization: Bearer <access_token>" -H "Content-Type: application/json"
+```
+
+- Update user by email:
+
+```bash
+curl -X PUT "http://localhost:8080/api/v1/event-booking/users/osayijoy17@gmail.com" H "Authorization: Bearer <access_token>" -H "Content-Type: application/json" -d '{"name":"Updated Name"}'
+```
+
+- Get all users:
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/event-booking/users/?page=1&size=10" H "Authorization: Bearer <access_token>" -H "Content-Type: application/json"
+```
+
+- Delete user by email:
+
+```bash
+curl -X DELETE "http://localhost:8080/api/v1/event-booking/users/osayijoy17@gmail.com"H "Authorization: Bearer <access_token>"
+```
+
+Event Endpoints
+
+- Create a new event:
+
+```bash
+curl -X POST "http://localhost:8080/api/v1/event-booking/events/" H "Authorization: Bearer <access_token>" -H "Content-Type: application/json" -d '{"name":"Conference","date":"2024-07-15T10:00:00","availableAttendeesCount":100,"description":"Tech Conference","category":"CONCERT"}'
+```
+
+- Update event by id:
+
+```bash
+curl -X PUT "http://localhost:8080/api/v1/event-booking/events/1" H "Authorization: Bearer <access_token>" -H "Content-Type: application/json" -d '{"name":"Updated Conference Name"}'
+```
+
+- Get event by id:
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/event-booking/events/1" H "Authorization: Bearer <access_token>" -H "Content-Type: application/json"
+```
+
+- Get all events with filters:
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/event-booking/events/?name=conference&startDate=2024-07-15&endDate=2024-07-20&category=CONCERT&page=1&size=10" H "Authorization: Bearer <access_token>" -H "Content-Type: application/json"
+```
+
+- Delete event by id:
+
+```bash
+curl -X DELETE "http://localhost:8080/api/v1/event-booking/events/1" H "Authorization: Bearer <access_token>"
+```
+
+Reservation Endpoints
+
+- Reserve a ticket for an event:
+
+```bash
+curl -X POST "http://localhost:8080/api/v1/event-booking/reservations/" H "Authorization: Bearer <access_token>" -H "Content-Type: application/x-www-form-urlencoded" -d "eventId=1&email=osayijoy17@gmail.com&attendeesCount=1"
+```
+
+- Get all reservations for a user:
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/event-booking/reservations/user/osayijoy17@gmail.com?page=1&size=10" H "Authorization: Bearer <access_token>"
+```
+
+- Get all reservations for an event:
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/event-booking/reservations/event/1?page=1&size=10" H "Authorization: Bearer <access_token>"
+```
+
+- Get a reservation by event id and user email:
+
+```bash
+curl -X GET "http://localhost:8080/api/v1/event-booking/reservations/event/1/osayijoy17@gmail.com" H "Authorization: Bearer <access_token>"
+```
+
+- Cancel a reservation by reservation id:
+
+```bash
+curl -X DELETE "http://localhost:8080/api/v1/event-booking/reservations/1" H "Authorization: Bearer <access_token>"
+```

@@ -27,6 +27,7 @@ import static com.osayijoy.eventbooking.utils.constants.Constants.AUTHENTICATION
  * @author Joy Osayi
  * @createdOn Jun-27(Thu)-2024
  */
+
 @RestController
 @RequestMapping(AUTHENTICATION_API_VI)
 @Tag(name = SwaggerDocUtil.AUTHENTICATION_CONTROLLER_SUMMARY, description = SwaggerDocUtil.AUTHENTICATION_CONTROLLER_DESCRIPTION)

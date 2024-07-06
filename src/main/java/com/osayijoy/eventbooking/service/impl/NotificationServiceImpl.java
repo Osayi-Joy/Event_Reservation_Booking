@@ -26,9 +26,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final ReservationService reservationService;
 
     @Override
-    @Scheduled(cron = "0 0 12 * * ?") // Example: run daily at noon
+    @Scheduled(cron = "0 0 12 * * ?")
     public void sendUpcomingEventNotifications() {
-
         List<EventResponseDto> upcomingEvents = eventService.getUpcomingEvents();
 
         for (EventResponseDto event : upcomingEvents) {
@@ -36,16 +35,35 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-
     private void sendNotificationToUsers(EventResponseDto event) {
         List<String> userEmails = reservationService.getUserEmailsForEvent(event.getId());
         String subject = "Upcoming Event Notification";
         String message = "Dear user, the event " + event.getName() + " will start soon. Get ready!";
 
         for (String userEmail : userEmails) {
-            emailService.sendEmail(userEmail, subject, message);
-            log.info("Notification sent to {}", userEmail);
+            boolean emailSent = sendEmailWithRetry(userEmail, subject, message, 3);
+            if (emailSent) {
+                log.info("Notification sent to {}", userEmail);
+            } else {
+                log.error("Failed to send notification to {}", userEmail);
+            }
         }
     }
-}
 
+    private boolean sendEmailWithRetry(String userEmail, String subject, String message, int maxRetries) {
+        int attempts = 0;
+        while (attempts < maxRetries) {
+            try {
+                emailService.sendEmail(userEmail, subject, message);
+                return true;
+            } catch (Exception e) {
+                attempts++;
+                log.warn("Attempt {} to send email to {} failed: {}", attempts, userEmail, e.getMessage());
+                if (attempts >= maxRetries) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+}

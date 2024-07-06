@@ -25,6 +25,7 @@ import static com.osayijoy.eventbooking.utils.constants.Constants.*;
  * @author Joy Osayi
  * @createdOn Jun-26(Wed)-2024
  */
+
 @RestController
 @RequestMapping(USER_API_VI)
 @Tag(name = USER_CONTROLLER_SUMMARY, description = USER_CONTROLLER_DESCRIPTION)
